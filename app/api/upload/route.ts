@@ -7,8 +7,6 @@ import { LlamaParseReader } from 'llamaindex';
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
-    console.log("FormData entries:", Array.from(formData.entries()));
-
     const uploadedFiles = formData.getAll('filepond');
     console.log("Uploaded Files:", uploadedFiles);
 
@@ -22,27 +20,27 @@ export async function POST(req: NextRequest) {
       if (uploadedFile instanceof File) {
         filename = uuidv4();
 
-        // Save the uploaded file temporarily
+       
         const tempFilePath = `/tmp/${filename}.pdf`;
         const fileBuffer = Buffer.from(await uploadedFile.arrayBuffer());
         await fs.writeFile(tempFilePath, fileBuffer);
 
-        // Parse the file using LlamaParseReader
+       
         const reader =  new LlamaParseReader({ resultType: 'markdown', apiKey: process.env.LLAMAPARSE_API });
         const documents = await reader.loadData(tempFilePath);
         const textContent = documents.map((doc: any) => doc.text || '').join('\n');
 
-        // Clean up the temporary file
+        
         await fs.unlink(tempFilePath);
 
-        // Split the parsed text into chunks using LangChain
+
         const splitter = new RecursiveCharacterTextSplitter({
           chunkSize: 1000,
           chunkOverlap: 200,
         });
         const chunks = await splitter.createDocuments([textContent]);
 
-        // Return the chunks as the response
+        
         return NextResponse.json({ success: true, chunks });
       } else {
         console.error('Uploaded file is not in the expected format.');
