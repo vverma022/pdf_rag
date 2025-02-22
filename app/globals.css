@@ -65,7 +65,7 @@
 
 @layer utilities {
   body {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Geist Mono', 'JetBrains Mono', monospace;
   }
 }
 

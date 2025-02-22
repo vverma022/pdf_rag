@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Icons} from "@/components/ui/icons"
+import ChromeIcon from "@/components/ui/chromeicon"
 
 export function LoginForm() {
   const router = useRouter()
@@ -53,8 +54,12 @@ export function LoginForm() {
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />
         </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+        <div className="relative flex flex-col justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground text-center pb-2">Or continue with</span>
+          <Button variant="outline" className="w-full">
+          <ChromeIcon className="mr-2 h-5 w-5" />
+           Google
+        </Button>
         </div>
       </div>
     </div>

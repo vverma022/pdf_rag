@@ -15,7 +15,7 @@ export function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
           <Wrench className="h-6 w-6" />
-          <span className="font-bold">MyDevTools</span>
+          <span className="font-bold">VectorVerse</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -24,16 +24,10 @@ export function Header() {
             <Link href="#features" className="transition hover:text-foreground/80">
               Features
             </Link>
-            <Link href="#community" className="transition hover:text-foreground/80">
-              Community
-            </Link>
-            <Link href="#docs" className="transition hover:text-foreground/80">
-              Docs
-            </Link>
           </nav>
           <div className="flex items-center space-x-4">
             <ModeToggle />
-            <Link href="https://github.com/mydevtools/repo" target="_blank" rel="noreferrer">
+            <Link href="https://github.com/vverma022/pdf_rag" target="_blank" rel="noreferrer">
               <Button
                 variant="outline"
                 size="icon"
@@ -73,7 +67,7 @@ export function Header() {
               Get Started
             </Link>
             <Link
-              href="https://github.com/mydevtools/repo"
+              href="https://github.com/vverma022/pdf_rag"
               target="_blank"
               rel="noreferrer"
               className="transition hover:text-foreground/80"
