@@ -1,25 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { v4 as uuidv4 } from 'uuid';
-import { saveTempFile, deleteTempFile } from '@/lib/app/file';
 import { extractTextFromFile } from '@/lib/app/text-manipulation';
+import { deleteTempFile } from '@/lib/app/file';
 import { chunkText } from '@/lib/app/chunking';
 
 export async function POST(req: NextRequest) {
   try {
-    const formData = await req.formData();
-    const uploadedFiles = formData.getAll('filepond');
+    const {tempFilePath} = await req.json();
 
-    if (uploadedFiles.length === 0 || !(uploadedFiles[0] instanceof File)) {
+    if (!tempFilePath) {
       return NextResponse.json({ error: 'No valid file uploaded' }, { status: 400 });
     }
-
-    const uploadedFile = uploadedFiles[0] as File;
-
-    
-    const filename = `${uuidv4()}.pdf`;
-    const fileBuffer = Buffer.from(await uploadedFile.arrayBuffer());
-    const tempFilePath = await saveTempFile(fileBuffer, filename);
-
     
     const textContent = await extractTextFromFile(tempFilePath);
 

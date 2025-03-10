@@ -16,26 +16,16 @@ export async function POST(req: NextRequest) {
     const filename = `${uuidv4()}.pdf`;
     const fileBuffer = Buffer.from(await uploadedFile.arrayBuffer());
     const tempFilePath = await saveTempFile(fileBuffer, filename);
+    
+   console.log('Yaha pouch gaya bsdk', tempFilePath);
 
-    try {
-      const processResponse = await axios.post(
-        `http://localhost:3000/api/text-manipulation`,
-        { tempFilePath },
-        {
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
+    const chunks = await axios.post('http://localhost:3000/tmani', {
+      tempFilePath
+    });
 
-      return NextResponse.json({ success: true, chunks: processResponse.data.chunks });
-    } catch (axiosError: any) {
-      console.error('Error calling process endpoint:', axiosError.response?.data || axiosError.message);
-      return NextResponse.json(
-        { error: axiosError.response?.data?.error || 'Processing failed' },
-        { status: axiosError.response?.status || 500 }
-      );
-    }
+    return NextResponse.json({ success: true, chunks: chunks.data.chunks });
   } catch (error) {
-    console.error('Error in upload endpoint:', error);
+    console.error('Error during file upload:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
