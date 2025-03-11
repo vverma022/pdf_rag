@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
-import { saveTempFile } from '@/lib/app/file'
-import axios from 'axios';
+import { saveTempFile , deleteTempFile } from '@/lib/utillity/file'
+import { extractTextFromFile } from '@/lib/utillity/text-manipulation';
+import { chunkText } from '@/lib/utillity/chunking';
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,14 +17,18 @@ export async function POST(req: NextRequest) {
     const filename = `${uuidv4()}.pdf`;
     const fileBuffer = Buffer.from(await uploadedFile.arrayBuffer());
     const tempFilePath = await saveTempFile(fileBuffer, filename);
+
+    if(!tempFilePath){
+      return NextResponse.json({error: 'No Valid Filepath Found'}, {status: 400});
+    }
+
+    const textContent = await extractTextFromFile(tempFilePath);
+
+    await deleteTempFile(tempFilePath);
+
+    const chunks = await chunkText(textContent);
     
-   console.log('Yaha pouch gaya bsdk', tempFilePath);
-
-    const chunks = await axios.post('http://localhost:3000/tmani', {
-      tempFilePath
-    });
-
-    return NextResponse.json({ success: true, chunks: chunks.data.chunks });
+    return NextResponse.json({ success: true, chunks});
   } catch (error) {
     console.error('Error during file upload:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
