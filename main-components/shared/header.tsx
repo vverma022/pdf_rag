@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Github, Wrench, Menu, X } from "lucide-react"
+import { Github,Menu, X , Codesandbox } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/ui/mode-toggle"
 
@@ -14,7 +14,7 @@ export function Header() {
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
-          <Wrench className="h-6 w-6" />
+          <Codesandbox className="h-6 w-6" />
           <span className="font-bold">VectorVerse</span>
         </Link>
 

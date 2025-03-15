@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { saveTempFile , deleteTempFile } from '@/lib/utillity/file'
 import { extractTextFromFile } from '@/lib/utillity/text-manipulation';
 import { chunkText } from '@/lib/utillity/chunking';
+import axios from 'axios';
 
 export async function POST(req: NextRequest) {
   try {
@@ -27,6 +28,8 @@ export async function POST(req: NextRequest) {
     await deleteTempFile(tempFilePath);
 
     const chunks = await chunkText(textContent);
+
+    // const embeddings = await createEmbeddings(chunks);
     
     return NextResponse.json({ success: true, chunks});
   } catch (error) {
@@ -34,3 +37,27 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+const createEmbeddings = async (chunks: any) => {
+  try {
+    const results = [];
+
+    for (const chunk of chunks) {
+      const response = await axios.post('http://localhost:11434/api/embed', {
+        input: chunk,
+      });
+
+      results.push({
+        chunk,
+        embedding: response.data,
+      });
+    }
+
+    return results;
+  } catch (error) {
+    console.error('Error generating embeddings:');
+    throw new Error('Failed to create embeddings');
+  }
+};
+
+export default createEmbeddings;
