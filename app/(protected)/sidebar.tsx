@@ -1,17 +1,19 @@
 "use client"
-import { LayoutGrid, Layers, Users, Settings, SettingsIcon as Functions, Codesandbox } from "lucide-react"
-import { Sidebar , SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarGroupContent, SidebarGroupLabel, SidebarMenuItem, SidebarContent, SidebarGroup, useSidebar } from "@/components/ui/sidebar"
+import { LayoutGrid, Layers, Users, Settings, SettingsIcon as Functions, Codesandbox, icons, BrainCircuit } from "lucide-react"
+import { Sidebar , SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarGroupContent, SidebarGroupLabel, SidebarMenuItem, SidebarContent, SidebarGroup, useSidebar, SidebarFooter } from "@/components/ui/sidebar"
 import Link from "next/link"
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { title } from "process";
+import { url } from "inspector";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 
 
 const MenuItem = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutGrid },
-  { title: "Functions", url: "/functions", icon: Functions },
-  { title: "Integrations", url: "/integrations", icon: Layers },
-  { title: "Users", url: "/users", icon: Users },
   { title: "Settings", url: "/settings", icon: Settings },
+  {title: "Add", url:"/add-data", icon: BrainCircuit}
+  
 ];
 
 const AppSidebar = () => {
@@ -79,6 +81,14 @@ const AppSidebar = () => {
       </SidebarGroupContent>
     </SidebarGroup>
   </SidebarContent>
+  <SidebarFooter>
+  <div className="flex justify-between items-center p-4">
+    <span className="text-sm">© 2025 VectorVerse.</span>
+    <div className="flex justify-end">
+      <ModeToggle />
+    </div>
+  </div>
+</SidebarFooter>
 </Sidebar>
   )
 }
