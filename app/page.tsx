@@ -2,6 +2,7 @@ import { HeroSection } from "@/main-components/landing/HeroSection"
 import { FeaturesSection } from "@/main-components/landing/FeaturesSection"
 import { CTASection } from "@/main-components/landing/CTASection"
 import { Header } from "@/main-components/shared/header"
+import { Footer } from "@/main-components/shared/footer"
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <HeroSection />
       <FeaturesSection />
       <CTASection />
+      <Footer />
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import { Footer } from "@/main-components/shared/footer"
 import AppSidebar from "./sidebar"
 import { SidebarProvider } from "@/components/ui/sidebar"
 
@@ -10,11 +11,12 @@ const SidebarLayout = ({children}: Props) => {
     <SidebarProvider>
         <AppSidebar />
         <main className='w-full m-2'>
-                <div className='h-4'></div>
-                <div className='border-sidebar-border bg-sidebar shadow rounded-md overflow-y-scroll h-[calc(100vh-6rem)] p-4'>
+                <div></div>
+                <div className='border-sidebar-border bg-sidebar shadow rounded-md overflow-y-scroll h-[calc(100vh-1rem)] p-4'>
                     {children}
                 </div>
         </main>
+        
      </SidebarProvider>   
   )
 }

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
-import { saveTempFile , deleteTempFile } from '@/lib/utillity/file'
+import { saveTempFile, deleteTempFile } from '@/lib/utillity/file';
 import { extractTextFromFile } from '@/lib/utillity/text-manipulation';
-import { chunkText } from '@/lib/utillity/chunking';
-import axios from 'axios';
+import { OllamaEmbeddingFunction } from 'chromadb';
+import client from '@/lib/chromadb';
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,45 +19,47 @@ export async function POST(req: NextRequest) {
     const fileBuffer = Buffer.from(await uploadedFile.arrayBuffer());
     const tempFilePath = await saveTempFile(fileBuffer, filename);
 
-    if(!tempFilePath){
-      return NextResponse.json({error: 'No Valid Filepath Found'}, {status: 400});
+    if (!tempFilePath) {
+      return NextResponse.json({ error: 'No valid filepath found' }, { status: 400 });
     }
 
+    // Extract text from the uploaded file
     const textContent = await extractTextFromFile(tempFilePath);
 
+    // Delete the temporary file
     await deleteTempFile(tempFilePath);
 
-    const chunks = await chunkText(textContent);
+    // Initialize the embedding function
+    const embedder = new OllamaEmbeddingFunction({
+      url: 'http://127.0.0.1:11434/',
+      model: 'nomic-embed-text',
+    });
 
-    // const embeddings = await createEmbeddings(chunks);
-    
-    return NextResponse.json({ success: true, chunks});
+    // Generate embeddings for the document (full text)
+    const embeddings = await embedder.generate([textContent]);
+
+    // Create or retrieve a ChromaDB collection
+    let collection = await client.getCollection({
+      name: 'document_embeddings',
+      embeddingFunction: embedder,
+    }).catch(async () => {
+      return await client.createCollection({
+        name: 'document_embeddings',
+        embeddingFunction: embedder,
+      });
+    });
+
+    // Add the document and its embedding to the collection
+    await collection.add({
+      ids: [uuidv4()],
+      embeddings: embeddings[0],
+      metadatas: [{ filename }],
+      documents: [textContent],
+    });
+
+    return NextResponse.json({ success: true, embeddings });
   } catch (error) {
     console.error('Error during file upload:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
-
-const createEmbeddings = async (chunks: any) => {
-  try {
-    const results = [];
-
-    for (const chunk of chunks) {
-      const response = await axios.post('http://localhost:11434/api/embed', {
-        input: chunk,
-      });
-
-      results.push({
-        chunk,
-        embedding: response.data,
-      });
-    }
-
-    return results;
-  } catch (error) {
-    console.error('Error generating embeddings:');
-    throw new Error('Failed to create embeddings');
-  }
-};
-
-export default createEmbeddings;

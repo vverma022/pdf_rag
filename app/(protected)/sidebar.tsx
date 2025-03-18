@@ -1,62 +1,85 @@
-import { Button } from "@/components/ui/button"
+"use client"
 import { LayoutGrid, Layers, Users, Settings, SettingsIcon as Functions, Codesandbox } from "lucide-react"
+import { Sidebar , SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarGroupContent, SidebarGroupLabel, SidebarMenuItem, SidebarContent, SidebarGroup, useSidebar } from "@/components/ui/sidebar"
+import Link from "next/link"
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+
+
+const MenuItem = [
+  { title: "Dashboard", url: "/dashboard", icon: LayoutGrid },
+  { title: "Functions", url: "/functions", icon: Functions },
+  { title: "Integrations", url: "/integrations", icon: Layers },
+  { title: "Users", url: "/users", icon: Users },
+  { title: "Settings", url: "/settings", icon: Settings },
+];
 
 const AppSidebar = () => {
+  const pathname = usePathname()
+    const {open} = useSidebar()
+
   return (
-    <div className="w-64 border-r bg-muted/10">
-        <div className="p-4 border-b">
-          <div className="flex items-center gap-2">
-            <Codesandbox className="h-6 w-6" />
-            <span className="font-semibold">VectorVerse</span>
-          </div>
-        </div>
-        <div className="h-[calc(100vh-64px)] overflow-auto">
-          <div className="space-y-4 p-4">
-            <nav className="space-y-2">
-              <Button variant="ghost" className="w-full justify-start">
-                <LayoutGrid className="mr-2 h-4 w-4" />
-                Tasks
-              </Button>
-              <Button variant="ghost" className="w-full justify-start">
-                <Functions className="mr-2 h-4 w-4" />
-                Functions
-              </Button>
-              <Button variant="ghost" className="w-full justify-start">
-                <Layers className="mr-2 h-4 w-4" />
-                Integrations
-              </Button>
-              <Button variant="ghost" className="w-full justify-start">
-                <Users className="mr-2 h-4 w-4" />
-                Users
-              </Button>
-              <Button variant="ghost" className="w-full justify-start">
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
-              </Button>
-            </nav>
-            <div className="pt-4 border-t">
-              <h3 className="px-2 mb-2 text-sm font-medium">Uploaded PDFs</h3>
-              <div className="space-y-1">
-                {/* {uploadedPdfs.length > 0 ? (
-                  uploadedPdfs.map((pdf) => (
-                    <Button
-                      key={pdf.id}
-                      variant={activePdf === pdf.id ? "secondary" : "ghost"}
-                      className="w-full justify-start text-sm"
-                      onClick={() => setActivePdf(pdf.id)}
-                    >
-                      <div className={`w-4 h-4 mr-2 ${pdf.color} rounded-sm`}></div>
-                      {pdf.name}
-                    </Button>
-                  )) */}
-                {/* ) : ( */}
-                  <p className="text-xs text-muted-foreground px-2">No PDFs uploaded yet</p>
-                {/* )} */}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <Sidebar>
+  <SidebarHeader>
+    <div className="flex items-center gap-4 m-4 pl-2">
+      <Codesandbox className="h-6 w-6" />
+      {open && <span className="font-bold text-xl">VectorVerse</span>}
+    </div>
+  </SidebarHeader>
+
+  <SidebarContent>
+    <SidebarGroup>
+      <SidebarGroupLabel className="font-semibold text-md">Navigation</SidebarGroupLabel>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {MenuItem.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton asChild>
+                <Link
+                  href={item.url}
+                  className={cn({
+                    '!bg-primary !text-secondary': pathname === item.url,
+                  })}
+                >
+                  <item.icon className="mr-2 h-4 w-4" />
+                  <span>{item.title}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
+
+    <SidebarGroup>
+      <SidebarGroupLabel className="font-semibold text-md">Uploaded PDFs</SidebarGroupLabel>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {/* {uploadedPdfs?.length > 0 ? (
+            uploadedPdfs.map((pdf) => (
+              <SidebarMenuItem key={pdf.id}>
+                <SidebarMenuButton asChild>
+                  <Button
+                    variant={activePdf === pdf.id ? 'secondary' : 'ghost'}
+                    className="w-full justify-start"
+                    onClick={() => setActivePdf(pdf.id)}
+                  >
+                    <div className={`w-4 h-4 mr-2 ${pdf.color} rounded-sm`}></div>
+                    {pdf.name}
+                  </Button>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            )) */}
+          {/* ) : ( */}
+            <p className="text-xs text-red-400 flex justify-center mt-4">
+              No PDFs uploaded yet
+            </p>
+          {/* )} */}
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
+  </SidebarContent>
+</Sidebar>
   )
 }
 
